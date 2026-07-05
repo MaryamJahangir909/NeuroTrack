@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NeuroTrack</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="page-dashboard">
+
+    <nav class="navbar">
+        <div class="nav-brand">NeuroTrack</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload MRI</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="chatbot.html">AI Assistant</a>
+            <a href="analytics.html">Analytics</a>
+        </div>
+    </nav>
+
+    <div class="dashboard-container">
+        <h1>Dashboard</h1>
+        <p>Real-time statistics from database</p>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="total-scans">...</h3>
+                <p>Total Scans</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="total-patients">...</h3>
+                <p>Total Patients</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="tumor-detected">...</h3>
+                <p>Tumors Detected</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="no-tumor">...</h3>
+                <p>No Tumor</p>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h2>Tumor Distribution</h2>
+                <p>Breakdown of all scan predictions</p>
+                <div class="chart-wrapper">
+                    <canvas id="tumorChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h2>Scan Overview</h2>
+                <p>Tumor vs No Tumor ratio</p>
+                <div class="chart-wrapper">
+                    <canvas id="overviewChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Scans Table -->
+        <div class="recent-scans">
+            <h2>Recent Scans</h2>
+            <table class="scans-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Patient</th>
+                        <th>Prediction</th>
+                        <th>Confidence</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="scans-tbody">
+                    <tr>
+                        <td colspan="6">Loading...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Registered Patients -->
+        <div class="patients-section">
+            <h2>Registered Patients</h2>
+            <div id="patients-list" class="patients-grid">
+                Loading...
+            </div>
+        </div>
+
+    </div>
+
+    <script src="main.js"></script>
+    <script src="dashboard.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+
+</body>
+</html>

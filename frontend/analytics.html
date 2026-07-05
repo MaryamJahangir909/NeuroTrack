@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics - NeuroTrack</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="page-analytics">
+
+    <nav class="navbar">
+        <div class="nav-brand">NeuroTrack</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload MRI</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="chatbot.html">AI Assistant</a>
+            <a href="analytics.html">Analytics</a>
+        </div>
+    </nav>
+
+    <div class="analytics-container">
+        <h1>Analytics & Visualization</h1>
+        <p>Comprehensive data analysis from all scans</p>
+
+        <!-- Summary Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3 id="total-scans">...</h3>
+                <p>Total Scans</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="total-patients">...</h3>
+                <p>Total Patients</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="tumor-detected">...</h3>
+                <p>Tumors Detected</p>
+            </div>
+            <div class="stat-card">
+                <h3 id="detection-rate">...</h3>
+                <p>Detection Rate</p>
+            </div>
+        </div>
+
+        <!-- Row 1: Pie + Doughnut -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h2>Tumor Type Distribution</h2>
+                <p>Breakdown by tumor classification</p>
+                <div class="chart-wrapper">
+                    <canvas id="tumorPieChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h2>Detection Overview</h2>
+                <p>Tumor vs No Tumor ratio</p>
+                <div class="chart-wrapper">
+                    <canvas id="detectionDoughnut"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 2: Bar + Horizontal Bar -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h2>Scans Per Category</h2>
+                <p>Number of scans by prediction result</p>
+                <div class="chart-wrapper">
+                    <canvas id="categoryBar"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h2>Confidence Analysis</h2>
+                <p>Average confidence per tumor type</p>
+                <div class="chart-wrapper">
+                    <canvas id="confidenceBar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Row 3: Radar + Polar -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <h2>System Performance</h2>
+                <p>AI model analysis metrics</p>
+                <div class="chart-wrapper">
+                    <canvas id="performanceRadar"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <h2>Risk Assessment</h2>
+                <p>Overall risk distribution</p>
+                <div class="chart-wrapper">
+                    <canvas id="riskPolar"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity Table -->
+        <div class="recent-scans" style="margin-top:40px;">
+            <h2>Complete Scan History</h2>
+            <table class="scans-table">
+                <thead>
+                    <tr>
+                        <th>Scan ID</th>
+                        <th>Patient</th>
+                        <th>Prediction</th>
+                        <th>Confidence</th>
+                        <th>Glioma %</th>
+                        <th>Meningioma %</th>
+                        <th>Pituitary %</th>
+                        <th>No Tumor %</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="history-tbody">
+                    <tr>
+                        <td colspan="10">Loading scan history...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>NeuroTrack AI-Powered Brain Tumor Detection System | All data is real-time from database</p>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="analytics.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+
+</body>
+</html>

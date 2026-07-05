@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload MRI - NeuroTrack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-upload">
+
+    <nav class="navbar">
+        <div class="nav-brand">NeuroTrack</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload MRI</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="analytics.html">Analytics</a>
+            <a href="chatbot.html">AI Assistant</a>
+        </div>
+    </nav>
+
+    <div class="upload-container">
+        <h1>Upload MRI Scan</h1>
+        <p>Select patient and upload MRI image for AI analysis</p>
+
+        <div class="form-group">
+            <label>Select Patient</label>
+            <select id="patient-select">
+                <option value="">Loading patients...</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Or Add New Patient</label>
+            <div class="new-patient-form">
+                <input type="text" id="patient-name"
+                       placeholder="Full Name (letters only)" maxlength="100">
+                <input type="number" id="patient-age"
+                       placeholder="Age (1-120)" min="1" max="120">
+                <input type="email" id="patient-email"
+                       placeholder="Email (example@gmail.com)">
+                <input type="tel" id="patient-phone"
+                       placeholder="Phone - optional" maxlength="15">
+                <button onclick="addPatient()" class="btn-primary">
+                    Add Patient
+                </button>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Upload MRI Image</label>
+            <div class="upload-area" id="upload-area">
+                <input type="file" id="mri-file"
+                       accept=".jpg,.jpeg,.png"
+                       onchange="previewImage(event)">
+                <div class="upload-placeholder" id="upload-placeholder">
+                    <p style="font-size:36px; margin-bottom:10px;">MRI</p>
+                    <p>Click to upload MRI image</p>
+                    <small>PNG, JPG, JPEG supported</small>
+                </div>
+                <img id="image-preview"
+                     style="display:none; max-width:300px;
+                            border-radius:10px; margin-top:10px;">
+            </div>
+        </div>
+
+        <button onclick="analyzeMRI()" class="btn-primary" id="analyze-btn">
+            Analyze MRI
+        </button>
+
+        <button id="download-report-btn"
+                style="display:none; margin-top:15px; width:100%;
+                       padding:15px; background:rgba(0,119,204,0.1);
+                       border:2px solid #0077cc; color:#0077cc;
+                       border-radius:12px; cursor:pointer;
+                       font-size:16px; font-weight:bold;">
+            Download PDF Report
+        </button>
+
+        <!-- Result Section -->
+        <div class="result-section" id="result-section" style="display:none;">
+            <h2>Analysis Result</h2>
+            <div class="result-card">
+                <div class="result-header" id="result-header">
+                    <h3 id="result-tumor-type"></h3>
+                    <span id="result-confidence"></span>
+                </div>
+                <div class="probabilities">
+                    <h4>Detailed Probabilities:</h4>
+                    <div class="prob-bar">
+                        <span>Glioma</span>
+                        <div class="bar-container">
+                            <div class="bar" id="bar-glioma"></div>
+                        </div>
+                        <span id="val-glioma"></span>
+                    </div>
+                    <div class="prob-bar">
+                        <span>Meningioma</span>
+                        <div class="bar-container">
+                            <div class="bar" id="bar-meningioma"></div>
+                        </div>
+                        <span id="val-meningioma"></span>
+                    </div>
+                    <div class="prob-bar">
+                        <span>No Tumor</span>
+                        <div class="bar-container">
+                            <div class="bar" id="bar-notumor"></div>
+                        </div>
+                        <span id="val-notumor"></span>
+                    </div>
+                    <div class="prob-bar">
+                        <span>Pituitary</span>
+                        <div class="bar-container">
+                            <div class="bar" id="bar-pituitary"></div>
+                        </div>
+                        <span id="val-pituitary"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3D Brain Model Section -->
+        <div id="brain3d-section"
+             style="display:none; margin-top:30px;
+                    background:rgba(255,255,255,0.05);
+                    padding:30px; border-radius:20px;
+                    border:1px solid rgba(255,255,255,0.1);">
+
+            <h2 style="color:#00d9ff; margin-bottom:5px;">
+                3D Brain Visualization
+            </h2>
+            <p style="color:#aaaaaa; margin-bottom:15px;">
+                Interactive 3D brain model showing tumor location.
+                Drag to rotate. Scroll to zoom.
+            </p>
+
+            <div id="brain3d-container"
+                 style="width:100%; height:300px;
+                        border-radius:15px; overflow:hidden;
+                        border:2px solid rgba(0,217,255,0.3);">
+            </div>
+
+            <div style="margin-top:15px; display:flex;
+                        gap:20px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:16px; height:16px;
+                                background:#f4c2c2;
+                                border-radius:50%;"></div>
+                    <span style="color:#aaaaaa; font-size:13px;">
+                        Brain tissue
+                    </span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:16px; height:16px;
+                                background:#ff0000;
+                                border-radius:50%;"></div>
+                    <span style="color:#aaaaaa; font-size:13px;">
+                        Glioma location
+                    </span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:16px; height:16px;
+                                background:#ff8800;
+                                border-radius:50%;"></div>
+                    <span style="color:#aaaaaa; font-size:13px;">
+                        Meningioma location
+                    </span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:16px; height:16px;
+                                background:#9932cc;
+                                border-radius:50%;"></div>
+                    <span style="color:#aaaaaa; font-size:13px;">
+                        Pituitary location
+                    </span>
+                </div>
+                <div style="display:flex; align-items:center; gap:8px;">
+                    <div style="width:16px; height:16px;
+                                background:#00ff88;
+                                border-radius:50%;"></div>
+                    <span style="color:#aaaaaa; font-size:13px;">
+                        No tumor (healthy)
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Multi-View MRI Viewer -->
+        <div id="mri-viewer-section"
+             style="display:none; margin-top:30px;
+                    background:rgba(255,255,255,0.05);
+                    padding:30px; border-radius:20px;
+                    border:1px solid rgba(255,255,255,0.1);">
+
+            <h2 style="color:#00d9ff; margin-bottom:5px;">
+                Multi-View MRI Analysis
+            </h2>
+            <p style="color:#aaaaaa; margin-bottom:20px;">
+                Professional radiology-style viewer showing
+                Axial, Sagittal and Coronal views
+            </p>
+
+            <div style="display:flex; flex-wrap:wrap; gap:15px;
+                        margin-bottom:20px; align-items:center;
+                        padding:15px; border-radius:12px;
+                        background:rgba(255,255,255,0.03);
+                        border:1px solid rgba(255,255,255,0.08);">
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#aaaaaa; font-size:13px;">Zoom:</span>
+                    <button onclick="MRIViewer.zoomIn()"
+                            style="background:rgba(0,217,255,0.1);
+                                   border:1px solid #00d9ff; color:#00d9ff;
+                                   padding:5px 14px; border-radius:8px;
+                                   cursor:pointer; font-size:16px;
+                                   font-weight:bold;">+</button>
+                    <button onclick="MRIViewer.zoomOut()"
+                            style="background:rgba(0,217,255,0.1);
+                                   border:1px solid #00d9ff; color:#00d9ff;
+                                   padding:5px 14px; border-radius:8px;
+                                   cursor:pointer; font-size:16px;
+                                   font-weight:bold;">-</button>
+                    <button onclick="MRIViewer.resetZoom()"
+                            style="background:rgba(0,217,255,0.1);
+                                   border:1px solid #00d9ff; color:#00d9ff;
+                                   padding:5px 14px; border-radius:8px;
+                                   cursor:pointer; font-size:13px;">Reset</button>
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#aaaaaa; font-size:13px;">Brightness:</span>
+                    <input type="range" min="50" max="200" value="100"
+                           oninput="MRIViewer.updateBrightness(this.value)"
+                           style="width:100px; accent-color:#00d9ff;">
+                    <span id="brightness-val"
+                          style="color:#00d9ff; font-size:13px;">100%</span>
+                </div>
+
+                <div style="display:flex; gap:8px; align-items:center;">
+                    <span style="color:#aaaaaa; font-size:13px;">Contrast:</span>
+                    <input type="range" min="50" max="200" value="100"
+                           oninput="MRIViewer.updateContrast(this.value)"
+                           style="width:100px; accent-color:#00d9ff;">
+                    <span id="contrast-val"
+                          style="color:#00d9ff; font-size:13px;">100%</span>
+                </div>
+
+                <button onclick="MRIViewer.invertColors()"
+                        style="background:rgba(153,102,255,0.1);
+                               border:1px solid rgba(153,102,255,0.5);
+                               color:#9966ff; padding:6px 14px;
+                               border-radius:8px; cursor:pointer;
+                               font-size:13px;">Invert Colors</button>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:15px;">
+                <div style="text-align:center;">
+                    <p style="color:#00d9ff; font-size:12px;
+                               font-weight:bold; margin-bottom:8px;
+                               letter-spacing:1px;">AXIAL VIEW</p>
+                    <canvas id="canvas-axial" width="220" height="220"
+                            style="border:2px solid rgba(0,217,255,0.4);
+                                   border-radius:10px; background:#000;
+                                   width:100%; max-width:220px;
+                                   cursor:crosshair;"></canvas>
+                    <p style="color:#666; font-size:11px; margin-top:5px;">
+                        Top-down view</p>
+                </div>
+                <div style="text-align:center;">
+                    <p style="color:#00ff88; font-size:12px;
+                               font-weight:bold; margin-bottom:8px;
+                               letter-spacing:1px;">SAGITTAL VIEW</p>
+                    <canvas id="canvas-sagittal" width="220" height="220"
+                            style="border:2px solid rgba(0,255,136,0.4);
+                                   border-radius:10px; background:#000;
+                                   width:100%; max-width:220px;
+                                   cursor:crosshair;"></canvas>
+                    <p style="color:#666; font-size:11px; margin-top:5px;">
+                        Side view</p>
+                </div>
+                <div style="text-align:center;">
+                    <p style="color:#ff6b6b; font-size:12px;
+                               font-weight:bold; margin-bottom:8px;
+                               letter-spacing:1px;">CORONAL VIEW</p>
+                    <canvas id="canvas-coronal" width="220" height="220"
+                            style="border:2px solid rgba(255,107,107,0.4);
+                                   border-radius:10px; background:#000;
+                                   width:100%; max-width:220px;
+                                   cursor:crosshair;"></canvas>
+                    <p style="color:#666; font-size:11px; margin-top:5px;">
+                        Front view</p>
+                </div>
+            </div>
+
+            <div style="margin-top:15px; padding:12px;
+                        background:rgba(0,217,255,0.05);
+                        border-radius:10px;
+                        border:1px solid rgba(0,217,255,0.15);
+                        display:flex; gap:20px; flex-wrap:wrap;">
+                <span style="color:#aaaaaa; font-size:12px;">
+                    Axial: Cross-sectional view from top</span>
+                <span style="color:#aaaaaa; font-size:12px;">
+                    Sagittal: Side profile view</span>
+                <span style="color:#aaaaaa; font-size:12px;">
+                    Coronal: Front-facing view</span>
+                <span id="mouse-coords"
+                      style="color:#00d9ff; font-size:12px;
+                             font-weight:bold;">X: 0 Y: 0</span>
+            </div>
+        </div>
+
+        <!-- Heatmap Section -->
+        <div id="heatmap-section"
+             style="display:none; margin-top:30px;
+                    background:rgba(255,255,255,0.05);
+                    padding:30px; border-radius:20px;
+                    border:1px solid rgba(255,255,255,0.1);">
+
+            <h2 style="color:#00d9ff; margin-bottom:10px;">
+                AI Attention Heatmap
+            </h2>
+            <p style="color:#aaaaaa; margin-bottom:20px;">
+                Red/Yellow areas show where AI detected abnormality
+            </p>
+
+            <div style="display:flex; gap:30px;
+                        flex-wrap:wrap; align-items:flex-start;">
+                <div style="text-align:center;">
+                    <p style="color:#00d9ff; margin-bottom:10px;
+                               font-weight:bold;">AI Heatmap Analysis</p>
+                    <img id="heatmap-image"
+                         style="width:300px; height:300px;
+                                border-radius:15px;
+                                border:2px solid #00d9ff;
+                                object-fit:cover;">
+                </div>
+
+                <div style="flex:1; min-width:220px;">
+                    <h3 style="color:#ffffff; margin-bottom:15px;">
+                        How to Read Heatmap:</h3>
+
+                    <div style="display:flex; align-items:center;
+                                gap:12px; margin-bottom:12px;">
+                        <div style="width:22px; height:22px;
+                                    background:#ff0000;
+                                    border-radius:50%;
+                                    flex-shrink:0;"></div>
+                        <span style="color:#cccccc;">
+                            Red = High attention (possible tumor area)</span>
+                    </div>
+                    <div style="display:flex; align-items:center;
+                                gap:12px; margin-bottom:12px;">
+                        <div style="width:22px; height:22px;
+                                    background:#ffff00;
+                                    border-radius:50%;
+                                    flex-shrink:0;"></div>
+                        <span style="color:#cccccc;">
+                            Yellow = Medium attention</span>
+                    </div>
+                    <div style="display:flex; align-items:center;
+                                gap:12px; margin-bottom:12px;">
+                        <div style="width:22px; height:22px;
+                                    background:#00aaff;
+                                    border-radius:50%;
+                                    flex-shrink:0;"></div>
+                        <span style="color:#cccccc;">
+                            Blue = Low attention (normal tissue)</span>
+                    </div>
+
+                    <div style="margin-top:20px; padding:15px;
+                                background:rgba(0,217,255,0.05);
+                                border-radius:10px;
+                                border:1px solid rgba(0,217,255,0.2);">
+                        <p style="color:#aaaaaa; font-size:13px;
+                                   line-height:1.6;">
+                            This visualization shows which brain regions
+                            influenced the AI prediction most using
+                            <strong style="color:#00d9ff;">
+                                Explainable AI (XAI)
+                            </strong> Grad-CAM algorithm.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <p>NeuroTrack AI Brain Tumor Detection System</p>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="main.js"></script>
+    <script src="viewer.js"></script>
+    <script src="brain3d.js"></script>
+    <script src="upload.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+
+</body>
+</html>

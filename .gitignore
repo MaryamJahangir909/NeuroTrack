@@ -1,0 +1,18 @@
+  # Python                                                                                                                                                            
+  __pycache__/                                                                                                                                                        
+  *.pyc                                                                                                                                                               
+  venv/                                                                                                                                                               
+                                                                                                                                                                      
+  # Dataset (too large for GitHub)                                                                                                                                    
+  dataset/                                                                                                                                                            
+                                                                                                                                                                      
+  # Uploaded files                                                                                                                                                    
+  uploads/                                                                                                                                                            
+                                                                                                                                                                      
+  # Database                                                                                                                                                          
+  instance/                                                                                                                                                           
+  *.db                                                                                                                                                                
+                                                                                                                                                                      
+  # OS                                                                                                                                                                
+  .DS_Store                                                                                                                                                           
+  EOF   

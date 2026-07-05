@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - NeuroTrack</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="page-chatbot">
+
+    <nav class="navbar">
+        <div class="nav-brand">NeuroTrack</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="upload.html">Upload MRI</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="chatbot.html">AI Assistant</a>
+            <a href="analytics.html">Analytics</a>
+        </div>
+    </nav>
+
+    <div class="chat-container">
+        <div class="chat-header">
+            <div class="chat-avatar">🤖</div>
+            <div class="chat-info">
+                <h2>NeuroTrack AI Assistant</h2>
+                <p class="chat-status">● Online - Ready to help</p>
+            </div>
+        </div>
+
+        <div class="chat-suggestions">
+            <p>Try asking:</p>
+            <button onclick="sendSuggestion('What is glioma?')">What is glioma?</button>
+            <button onclick="sendSuggestion('Symptoms of meningioma')">Symptoms of meningioma</button>
+            <button onclick="sendSuggestion('Show my scan result')">Show my scan result</button>
+            <button onclick="sendSuggestion('Treatment for pituitary tumor')">Treatment for pituitary</button>
+            <button onclick="sendSuggestion('How to prevent brain tumors')">Prevention tips</button>
+        </div>
+
+        <div class="chat-messages" id="chat-messages">
+            <div class="message bot-message">
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    Hello! I am NeuroTrack AI Assistant. I can help you understand brain tumors, symptoms, treatments, and your scan results. What would you like to know?
+                </div>
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" 
+                   id="chat-input" 
+                   placeholder="Ask me about brain tumors, symptoms, treatment..."
+                   onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="send-btn">Send ➤</button>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="chatbot.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+
+</body>
+</html>
