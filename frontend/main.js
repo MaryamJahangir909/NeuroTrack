@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://maryam-jk-neurotrack-backend.hf.space';
 
 document.addEventListener('DOMContentLoaded', function() {
     loadStats();
