@@ -15,4 +15,4 @@
   ENV FLASK_APP=backend/app.py                                                                                                                                        
                                                                                                                                                                       
   CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--chdir", "backend", "app:app"]                                                                                         
-  EOF
+  DONE 
